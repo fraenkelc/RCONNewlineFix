@@ -1,0 +1,16 @@
+[
+{
+  "modid": "rconfix",
+  "name": "RCon newline Fix",
+  "description": "Adds missing newlines to rcon output",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Christian Fraenkel"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
