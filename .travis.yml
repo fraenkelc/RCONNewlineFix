@@ -3,7 +3,6 @@ jdk:
 - oraclejdk8
 
 sudo: false
-before_install: chmod +x gradlew
 install: "./gradlew setupCIWorkspace -s"
 script: "./gradlew build -s"
 
