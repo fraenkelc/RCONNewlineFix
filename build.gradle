@@ -65,9 +65,13 @@ processResources
         exclude 'mcmod.info'
     }
 }
+ext.sharedManifest = manifest {
+	attributes ('Implementation-Version': project.version)
+}
 
 jar {
 	manifest {
 		from 'src/main/resources/META-INF/MANIFEST.MF'
+		from sharedManifest
 	}
 }

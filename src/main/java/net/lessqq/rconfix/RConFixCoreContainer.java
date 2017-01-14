@@ -20,7 +20,7 @@ public class RConFixCoreContainer extends DummyModContainer {
         md.name = "RCONFixCore";
         md.description = "Adds newlines to multiline rcon replies";
         md.authorList = Arrays.asList("Christian Fraenkel");
-        md.version = "1.0.1";
+        md.version = RConFixCore.class.getPackage().getImplementationVersion();
     }
 
     @Override
