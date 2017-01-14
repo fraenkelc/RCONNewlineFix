@@ -19,8 +19,8 @@ public class RConFixCoreContainer extends DummyModContainer {
         md.modId = "rconfixcore";
         md.name = "RCONFixCore";
         md.description = "Adds newlines to multiline rcon replies";
-        md.authorList = Arrays.asList("corianin");
-        md.version = "1.0";
+        md.authorList = Arrays.asList("Christian Fraenkel");
+        md.version = "1.0.1";
     }
 
     @Override
