@@ -1,16 +1,16 @@
 package net.lessqq.rconfix;
 
-import java.util.Map;
-
-import codechicken.lib.asm.ASMBlock;
-import codechicken.lib.asm.ASMReader;
-import codechicken.lib.asm.ModularASMTransformer;
-import codechicken.lib.asm.ModularASMTransformer.MethodInjector;
-import codechicken.lib.asm.ObfMapping;
+import codechicken.asm.ASMBlock;
+import codechicken.asm.ASMReader;
+import codechicken.asm.ModularASMTransformer;
+import codechicken.asm.ObfMapping;
+import codechicken.asm.transformers.MethodInjector;
 import net.minecraft.launchwrapper.IClassTransformer;
 
+import java.util.Map;
+
 public class RCONFixASMTransformer implements IClassTransformer {
-    private ModularASMTransformer transformer = new ModularASMTransformer();
+    private ModularASMTransformer transformer = new ModularASMTransformer("RConFixTransformer");
 
     public RCONFixASMTransformer() {
         Map<String, ASMBlock> blocks = ASMReader.loadResource("/assets/rconfix/asm/hooks.asm");

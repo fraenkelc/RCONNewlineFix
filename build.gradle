@@ -4,7 +4,7 @@ buildscript {
         maven { url = "http://files.minecraftforge.net/maven" }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
     }
 }
 plugins {
@@ -12,26 +12,26 @@ plugins {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-group= "net.lessqq.rconfix" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+group = "net.lessqq.rconfix" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "rconfix"
 
 sourceCompatibility = targetCompatibility = "1.8" // Need this here so eclipse task generates correctly.
 compileJava {
-    sourceCompatibility = targetCompatibility = "1.8"
+    sourceCompatibility = targetCompatibility = '1.8'
 }
 
 ext {
-	mc_version = "1.10.2"
-	forge_version = "12.18.3.2185"
+    mc_version = '1.12.2'
+    forge_version = '14.23.1.2555'
 }
 
-version = project.mc_version + "-" + gitVersion()
+version = project.mc_version + '-' + gitVersion()
 
 minecraft {
-    version = project.mc_version + "-" + project.forge_version
+    version = project.mc_version + '-' + project.forge_version
     runDir = "run"
-    
-    mappings = "snapshot_20161111"
+
+    mappings = "snapshot_20171003"
 }
 
 
@@ -42,12 +42,15 @@ repositories {
     }
 }
 
+configurations {
+    embed
+    compile.extendsFrom embed
+}
 dependencies {
-    compile "codechicken:CodeChickenLib:${project.minecraft.version}-2.5.1.+:deobf"
+    embed "codechicken:ChickenASM:1.12-1.0.2.+"
 }
 
-processResources
-{
+processResources {
     // this will ensure that this task is redone when the versions change.
     inputs.property "version", project.version
     inputs.property "mcversion", project.minecraft.version
@@ -55,23 +58,53 @@ processResources
     // replace stuff in mcmod.info, nothing else
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
-                
+
         // replace version and mcversion
-        expand 'version':project.version, 'mcversion':project.minecraft.version
+        expand 'version': project.version, 'mcversion': project.minecraft.version
     }
-        
+
     // copy everything else, thats not the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
 }
 ext.sharedManifest = manifest {
-	attributes ('Implementation-Version': project.version)
+    attributes('Implementation-Version': project.version)
 }
 
 jar {
-	manifest {
-		from 'src/main/resources/META-INF/MANIFEST.MF'
-		from sharedManifest
-	}
+    from(configurations.embed)
+    manifest {
+        from 'src/main/resources/META-INF/MANIFEST.MF'
+        from sharedManifest
+        attributes 'ContainedDeps': configurations.embed.files.collect {it.getName()}.join(" ")
+    }
+    doFirst {
+        manifest {
+            attributes 'ContainedDeps': configurations.embed.files.collect { it.getName() }.join(" ")
+        }
+    }
 }
+def signingProps = file("signing.properties");
+if (signingProps.exists())
+    signingProps.withReader { reader ->
+        def userProps = new Properties()
+        userProps.load(reader)
+        ext['signing'] = userProps
+    }
+
+task signJar(type: SignJar, dependsOn: reobfJar) {
+    onlyIf {
+        project.hasProperty('signing')
+    }
+    if (project.hasProperty('signing')) {
+        keyStore = project.signing.keyStore
+        alias = 'rconfix'
+        storePass = project.signing.keyStorePass
+        keyPass = project.signing.keyStoreKeyPass
+        inputFile = jar.archivePath
+        outputFile = jar.archivePath
+    }
+}
+
+build.dependsOn signJar

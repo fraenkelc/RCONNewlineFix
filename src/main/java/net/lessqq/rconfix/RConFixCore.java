@@ -16,7 +16,7 @@ public class RConFixCore implements IFMLLoadingPlugin {
 
     @Override
     public String getModContainerClass() {
-        return RConFixCoreContainer.class.getName();
+        return null;
     }
 
     @Override
