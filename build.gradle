@@ -77,7 +77,6 @@ jar {
     manifest {
         from 'src/main/resources/META-INF/MANIFEST.MF'
         from sharedManifest
-        attributes 'ContainedDeps': configurations.embed.files.collect {it.getName()}.join(" ")
     }
     doFirst {
         manifest {
