@@ -1,37 +1,17 @@
 package net.lessqq.rconfix;
 
-import java.util.Map;
+import net.minecraftforge.fml.ExtensionPoint;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.network.FMLNetworkConstants;
+import org.apache.commons.lang3.tuple.Pair;
 
-import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
+@Mod(RConFixCore.MODID)
+public class RConFixCore {
+    public static final String MODID = "rcon-newline-fix";
 
-@IFMLLoadingPlugin.Name(RConFixCore.MODID)
-public class RConFixCore implements IFMLLoadingPlugin {
-
-    public static final String MODID = "RCONNewlineFix";
-
-    @Override
-    public String[] getASMTransformerClass() {
-        return new String[] { RCONFixASMTransformer.class.getName() };
-    }
-
-    @Override
-    public String getModContainerClass() {
-        return null;
-    }
-
-    @Override
-    public String getSetupClass() {
-        return null;
-    }
-
-    @Override
-    public void injectData(Map<String, Object> paramMap) {
-        // nothing to do
-    }
-
-    @Override
-    public String getAccessTransformerClass() {
-        return null;
+    public RConFixCore() {
+        ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, () -> Pair.of(() -> FMLNetworkConstants.IGNORESERVERONLY, (a, b) -> true));
     }
 
 }

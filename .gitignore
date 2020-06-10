@@ -20,7 +20,11 @@ build
 # other
 eclipse
 run
-logs
-signing.properties
-keystore.jks
+
+# Files from Forge MDK
+forge*changelog.txt
+
+
+/keystore.jks
 secrets.tar
+signing.properties

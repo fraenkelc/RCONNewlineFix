@@ -1,101 +1,155 @@
 buildscript {
+    configurations.classpath {
+        resolutionStrategy {
+            force 'org.eclipse.jgit:org.eclipse.jgit:5.3.1.201904271842-r'
+        }
+    }
+
     repositories {
+        maven { url = 'https://files.minecraftforge.net/maven' }
         jcenter()
-        maven { url = "http://files.minecraftforge.net/maven" }
+        mavenCentral()
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
     }
 }
+
 plugins {
-    id 'com.palantir.git-version' version '0.5.3'
-}
-apply plugin: 'net.minecraftforge.gradle.forge'
-
-group = "net.lessqq.rconfix" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "rconfix"
-
-sourceCompatibility = targetCompatibility = "1.8" // Need this here so eclipse task generates correctly.
-compileJava {
-    sourceCompatibility = targetCompatibility = '1.8'
+    id 'com.palantir.git-version' version '0.12.3'
+    id 'maven-publish'
 }
 
-ext {
-    mc_version = '1.12.2'
-    forge_version = '14.23.1.2555'
-}
+apply plugin: 'net.minecraftforge.gradle'
 
-version = project.mc_version + '-' + gitVersion()
+version = "1.15.2-${gitVersion()}"
+group = 'net.lessqq.rconfix' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = 'rconfix'
+
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
 minecraft {
-    version = project.mc_version + '-' + project.forge_version
-    runDir = "run"
+    mappings channel: 'snapshot', version: '20200514-1.15.1'
+    runs {
+        client {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.console.level', 'debug'
 
-    mappings = "snapshot_20171003"
-}
+            mods {
+                rconfix {
+                    source sourceSets.main
+                }
+            }
+        }
 
+        server {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.console.level', 'debug'
 
-repositories {
-    maven {
-        name 'CB Maven FS'
-        url "http://chickenbones.net/maven/"
+            mods {
+                rconfix {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        data {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.console.level', 'debug'
+
+            args '--mod', 'rconfix', '--all', '--output', file('src/generated/resources/')
+
+            mods {
+                rconfix {
+                    source sourceSets.main
+                }
+            }
+        }
     }
 }
 
-configurations {
-    embed
-    compile.extendsFrom embed
-}
 dependencies {
-    embed "codechicken:ChickenASM:1.12-1.0.2.+"
-}
-
-processResources {
-    // this will ensure that this task is redone when the versions change.
-    inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
-
-    // replace stuff in mcmod.info, nothing else
-    from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
-
-        // replace version and mcversion
-        expand 'version': project.version, 'mcversion': project.minecraft.version
-    }
-
-    // copy everything else, thats not the mcmod.info
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
-    }
-}
-ext.sharedManifest = manifest {
-    attributes('Implementation-Version': project.version)
+    minecraft 'net.minecraftforge:forge:1.15.2-31.2.9'
 }
 
 jar {
-    from(configurations.embed)
     manifest {
-        from 'src/main/resources/META-INF/MANIFEST.MF'
-        from sharedManifest
+        attributes 'Specification-Title': archivesBaseName
+        attributes 'Specification-Vendor': 'fraenkelc'
+        attributes 'Specification-Version': "1"
+        attributes 'Implementation-Title': archivesBaseName
+        attributes 'Implementation-Vendor': 'fraenkelc'
+        attributes 'Implementation-Version': version
+
+        attributes 'Maven-Artifact': "${project.group}:${project.archivesBaseName}:${project.version}"
     }
-    doFirst {
-        manifest {
-            attributes 'ContainedDeps': configurations.embed.files.collect { it.getName() }.join(" ")
+}
+
+// Example configuration to allow publishing using the maven-publish task
+// This is the preferred method to reobfuscate your jar file
+jar.finalizedBy('reobfJar')
+
+publishing {
+    publications {
+        rconNewlineFix(MavenPublication) {
+            groupId project.group
+            artifactId project.archivesBaseName
+            version project.version
+            artifact jar
+            pom {
+                name = archivesBaseName
+                description = archivesBaseName
+                url = 'https://github.com/fraenkelc/RCONNewlineFix'
+                scm {
+                    url = 'https://github.com/fraenkelc/RCONNewlineFix'
+                    connection = 'scm:git:git://github.com:fraenkelc/RCONNewlineFix.git'
+                    connection = 'scm:git:git@github.com:fraenkelc/RCONNewlineFix.git'
+                }
+
+                issueManagement {
+                    system = 'github'
+                    url = 'https://github.com/fraenkelc/RCONNewlineFix/issues'
+                }
+                licenses {
+                    license {
+                        name = "MIT"
+                        url = "https://github.com/fraenkelc/RCONNewlineFix/raw/master/LICENSE"
+                        distribution = 'repo'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'fraenkelc'
+                        name = 'fraenkelc'
+                    }
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            url "file:///${project.projectDir}/mcmodsrepo"
         }
     }
 }
 def signingProps = file("signing.properties");
-if (signingProps.exists())
+if (signingProps.exists()) {
+    println("Loading signing properties from signing.properties")
     signingProps.withReader { reader ->
         def userProps = new Properties()
         userProps.load(reader)
         ext['signing'] = userProps
     }
+} else {
+    println("No signing properties found.")
+}
 
-task signJar(type: SignJar, dependsOn: reobfJar) {
-    onlyIf {
-        project.hasProperty('signing')
-    }
+task signJar(type: net.minecraftforge.gradle.common.task.SignJar) {
+    mustRunAfter("reobfJar")
+    onlyIf { project.hasProperty('signing') }
     if (project.hasProperty('signing')) {
         keyStore = project.signing.keyStore
         alias = 'rconfix'
@@ -106,4 +160,4 @@ task signJar(type: SignJar, dependsOn: reobfJar) {
     }
 }
 
-build.dependsOn signJar
+jar.finalizedBy(signJar)

@@ -1,4 +1,0 @@
-Manifest-Version: 1.0
-FMLCorePlugin: net.lessqq.rconfix.RConFixCore
-Implementation-Title: RCON newline fix
-Implementation-Version: develop

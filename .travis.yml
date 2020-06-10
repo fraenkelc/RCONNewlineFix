@@ -1,9 +1,7 @@
 language: java
 jdk:
-- oraclejdk8
-sudo: false
-install: "./gradlew setupCIWorkspace -s"
-script: "./gradlew build -s"
+- openjdk8
+script: "./gradlew build"
 cache:
   directories:
   - "$HOME/.gradle/caches/"
@@ -14,13 +12,13 @@ before_cache:
 deploy:
   provider: releases
   api_key:
-    secure: YaYuF/HNskSB6mqZ34u4Zq5+bdauQd0XCJcPCROH47G1KywWter/Zo36U8ea8228gDmyXw947A7tec/TRkGAm8QoysIs18cO2fh6FY6NO0mxWpJ3TdwCOos2COfjjbTAJxHXjQPeK/Sp1hx54EY+OgIBR8CcBNy7+sI03qwurTDHEkvd7OAfd7Q/FjUc4M82LXw66Xd5DNd2AiINHQJ13v/rC0B11Smzfd50rTZrtmk/B/dlE9layFSyNCKNcLN1UeEEtTxxzgs1qgMEpk/yoPCu7yeh8VUGn+AIftrMwMlYdnbTHdgdRdBOGLzM9TL6wSA/Lf0yC8YpDRi3mSqzjTdWPxn6RemKSAaf95/WnmDZu4qBAOHJLu7zBZjrvPbjkogOGzDPawe+tlimAs6t9u6meXGG6taREkEPB/DbDIXMGNlwd5V81Hve7GmhecFdS2bdtKNNXPKZ+2Ugaea6HQIPEbugGgLT6cx1Jx9GSmdhHvD9rFVgD2PbzkVM+Cb/M9QXpyIJsNmiFCSP77/aYCrLHfww1UchS6IbVhpZZ2z8T9kzxW9DPUqFlzxmb17q1B0vQSIhc5k85gTDo2y9FCsuq5VzlLETyCi/60GPUeXpGePPRXXMutqZoNptHdkctnZIWKexnqCwHwiqVHuc5tAt/atHdzs0xbSILSg0oaw=
+    secure: Bc1DLi3Yr0NDzHxTM7asSNaRAcM2rsK8qQBdJESIyLcaqLS2oYx76LxBIUHRPu2zaIkHYnPQncuRnAhicWT7PmhIAScJeVqhWefihykGAQzr4rNTacF5FmBPaY+FtZxAqV1Y63n41ePLR3iTWTVq6IbmJJXueQiIn45Ahq1kMJifRhdO0LYX55Po26xoQXPMDkCmNBpK5Q+kkTeK1Yc+bJWX9IkZcUs8C+C7RvrxkpHiEd3HJ1hRzyUhjUBJDfByvBJaaGOSG1mGWkhLofs/0oePgDzv5ztC5bs7GZTEEjqG+TYCRpbUHdOv7c9XXXRZC+HfpYNETezLqDEHu5kUPdHMBEvKz4jix5E9hPp5i1scskdIy4vCQIyhZjjyAdBtd0um549xTL80btp/Aun8vgk0BrXetQdiaMDI+TOwKGEdGOwcppwuaFYNj/MAxmkTuhxIgMGm74m0qgsjiE652c/vpKiTitmpWEekGMq2ft9BOSYsOTvRVVxzIlxtPzR1RDqXdPDgME/DzgtPn/1O9TkJjhJ85U2OvqH2lMA4f6M5nlPh9CCmFYz/SlNQ4XpKUEHeDZgRZTxfI+Rk37o6vTDnzuuKmc2VPplXHY76e9gBOaZRnaeErO6r78B4Y3GD0GON0+mmTCiP5aY67kCxjhoM5tHh4E5U5hfv1GE3q9A=
   file: build/libs/rconfix-*.jar
   file_glob: true
-  skip_cleanup: true
   on:
     repo: fraenkelc/RCONNewlineFix
     tags: true
+  skip_cleanup: 'true'
 before_install:
 - openssl aes-256-cbc -K $encrypted_12c8071d2874_key -iv $encrypted_12c8071d2874_iv
   -in secrets.tar.enc -out secrets.tar -d

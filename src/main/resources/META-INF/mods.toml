@@ -1,0 +1,12 @@
+modLoader="javafml"
+loaderVersion="[31,)"
+issueTrackerURL="https://github.com/fraenkelc/RCONNewlineFix/issues"
+[[mods]]
+modId="rcon-newline-fix"
+version="${file.jarVersion}"
+displayName="RCon newline Fix"
+displayURL="https://github.com/fraenkelc/RCONNewlineFix"
+authors="Christian Fraenkel"
+description='''
+Adds missing newlines to rcon output
+'''
